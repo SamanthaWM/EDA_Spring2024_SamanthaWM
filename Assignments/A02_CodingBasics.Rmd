@@ -89,11 +89,26 @@ create_df
 11. Apply your function to the vector with test scores that you created in number 5.
 
 ```{r basics 3}
+#If, else metod
+Test_scores <- function(score_of_students){
+  if(score_of_students > 50) {
+    score_of_students <- 'pass'
+  }
+  else {
+    score_of_students <- 'fails'
+  }
+  print(Test_scores)
+}
 
-
+#ifelse metod
+Test_scores <- function(score_of_students) {
+  ifelse(score_of_students > 50, 'pass', 'fails')
+  
+  print(Test_scores)
+}
 
 ```
 
 12. QUESTION: Which option of `if` and `else` vs. `ifelse` worked? Why?
 
-> Answer:
+> Answer: ifelde worked. Because if else is stricter than ifelse, and can generate error eadyly if the code is not well executed.
