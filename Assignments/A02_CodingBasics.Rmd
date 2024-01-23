@@ -90,6 +90,8 @@ create_df
 
 ```{r basics 3}
 
+
+
 ```
 
 12. QUESTION: Which option of `if` and `else` vs. `ifelse` worked? Why?
