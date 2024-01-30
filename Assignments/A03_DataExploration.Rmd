@@ -161,38 +161,51 @@ ggplot(Neonics) +
 10. Reproduce the same graph but now add a color aesthetic so that different Test.Location are displayed as different colors.
 
 ```{r}
+library(ggplot2)
+
 ggplot(Neonics) +
-  geom_freqpoly(aes(x = `Publication Year`), color = "lightblue", size = 1,
-                y = `Test Location`, color = "green" )
+  geom_freqpoly(aes(x = `Publication Year`, y = `Test Location`), color = "lightblue", size = 1)
 
-
+              
 ```
 
 Interpret this graph. What are the most common test locations, and do they differ over time?
 
-> Answer:
+> Answer: the most common test locations are the lab and they have been taken mostly during 2008 and 2017.
 
 11. Create a bar graph of Endpoint counts. What are the two most common end points, and how are they defined? Consult the ECOTOX_CodeAppendix for more information. 
 
 [**TIP**: Add `theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))` to the end of your plot command to rotate and align the X-axis labels...]
 
 ```{r}
+library(ggplot2)
+
+ggplot(Neonics) +
+  geom_bar(aes(x = Endpoint)) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
 
 ```
 
-> Answer:
+> Answer: the two most common end points are NOEL abd LOEl. They are defined as NOEL: No-observable-effect-level, and LOEL: Lowest-observable-effect-leve.
 
 ## Explore your data (Litter)
 
 12. Determine the class of collectDate. Is it a date? If not, change to a date and confirm the new class of the variable. Using the `unique` function, determine which dates litter was sampled in August 2018.
 
 ```{r}
+class(Litter$collectDate)
+# It is a Date
+
+unique(Litter$collectDate)
+#"2018-08-02" "2018-08-30"
 
 ```
 
 13. Using the `unique` function, determine how many plots were sampled at Niwot Ridge. How is the information obtained from `unique` different from that obtained from `summary`?
 
 ```{r}
+
 
 ```
 
