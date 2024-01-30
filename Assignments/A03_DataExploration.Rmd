@@ -35,11 +35,11 @@ This exercise accompanies the lessons in Environmental Data Analytics on Data Ex
 ```{r,  message = FALSE}
 library(readr)
 Neonics <- read_csv("/home/guest/EDA_Spring2024_SamanthaWM/Data/Raw/ECOTOX_Neonicotinoids_Insects_raw.csv")
-View(Litter)
+View(Neonics)
 
 library(readr)
 Litter <- read_csv("/home/guest/EDA_Spring2024_SamanthaWM/Data/Raw/NIWO_Litter/NEON_NIWO_Litter_massdata_2018-08_raw.csv")
-View(Neonics)
+View(Litter)
 
 ```
 
@@ -106,33 +106,45 @@ summary(Neonics)
 6.  Using the `summary` function on the "Effect" column, determine the most common effects that are studied. Why might these effects specifically be of interest?
 
 ```{r}
-summary(Neonics$Effect)
-#   Length     Class      Mode 
-#   4623     character   character 
+mode_value <- as.character(names(Neonics$Effect)[which.max(Neonics$Effect)])
 
-summary(Neonics$Effect, common_name)
+print(paste("Mode:", mode_value))
 
+# "Mode: Population"
 
 ```
 
-> Answer:Because xxx
+> Answer:Because it indicates the extention in terms of individuals that are being affected by the insecticide
 
 
 7.  Using the `summary` function, determine the six most commonly studied species in the dataset (common name). What do these species have in common, and why might they be of interest over other insects? Feel free to do a brief internet search for more information if needed.[TIP: The `sort()` command can sort the output of the summary command...]
 
 ```{r}
+categorical_summary <- function(column) {
+  freq_table <- table(column)
+  cat("Frequency Table:\n")
+  print(freq_table)
+  cat("\nTop 6 most common values:\n")
+  print(names(sort(freq_table, decreasing = TRUE)[1:6]))
+}
+  
+categorical_summary(Neonics$`Species Common Name`)
+
+#"Honey Bee" "Parasitic Wasp" "Buff Tailed Bumblebee" "Carniolan Honey Bee" "Bumble Bee" "Italian Honeybee"  
 
 ```
 
-> Answer:
+> Answer:This species paly an important roll in the of plants, also some of them can be a tool for other species poblational regulation.
 
 8.  Concentrations are always a numeric value. What is the class of `Conc.1..Author.` column in the dataset, and why is it not numeric?
 
 ```{r}
+summary(Neonics$`Conc 1 (Author)`)
+# Class: character
 
 ```
 
-> Answer:
+> Answer: Because sometimes when importing data, the progrma may sometimes misinterpret the data types. Also the missing data can be interpretated as character for the entire column.
 
 ## Explore your data graphically (Neonics)
 
