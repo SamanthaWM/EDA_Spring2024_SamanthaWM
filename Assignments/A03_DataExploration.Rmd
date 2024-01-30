@@ -34,11 +34,11 @@ This exercise accompanies the lessons in Environmental Data Analytics on Data Ex
 
 ```{r,  message = FALSE}
 library(readr)
-Litter <- read_csv("/home/guest/EDA_Spring2024_SamanthaWM/Data/Raw/ECOTOX_Neonicotinoids_Insects_raw.csv")
+Neonics <- read_csv("/home/guest/EDA_Spring2024_SamanthaWM/Data/Raw/ECOTOX_Neonicotinoids_Insects_raw.csv")
 View(Litter)
 
 library(readr)
-Neonics <- read_csv("/home/guest/EDA_Spring2024_SamanthaWM/Data/Raw/NIWO_Litter/NEON_NIWO_Litter_massdata_2018-08_raw.csv")
+Litter <- read_csv("/home/guest/EDA_Spring2024_SamanthaWM/Data/Raw/NIWO_Litter/NEON_NIWO_Litter_massdata_2018-08_raw.csv")
 View(Neonics)
 
 ```
@@ -65,16 +65,57 @@ View(Neonics)
 5.  What are the dimensions of the dataset?
 
 ```{r}
+dim(Neonics) #4623 rows, 30 columns
+summary(Neonics)
+#    CAS Number        Chemical Name      Chemical Grade     Chemical Analysis Method Chemical Purity    Species Scientific Name
+#  Min.   : 58842209   Length:4623        Length:4623        Length:4623              Length:4623        Length:4623        
+#  1st Qu.:138261413   Class :character   Class :character   Class :character         Class :character   Class :character   
+#  Median :138261413   Mode  :character   Mode  :character   Mode  :character         Mode  :character   Mode  :character   
+#  Mean   :147651982                                                                                                        
+#  3rd Qu.:153719234                                                                                                        
+#  Max.   :210880925                                                                                                            
+#  Species Common Name Species Group      Organism Lifestage Organism Age       Organism Age Units Exposure Type     
+#  Length:4623         Length:4623        Length:4623        Length:4623        Length:4623        Length:4623       
+#  Class :character    Class :character   Class :character   Class :character   Class :character   Class :character  
+#  Mode  :character    Mode  :character   Mode  :character   Mode  :character   Mode  :character   Mode  :character  
+                                                                                                                   
+#   Media Type        Test Location      Number of Doses    Conc 1 Type (Author) Conc 1 (Author)    Conc 1 Units (Author)
+#  Length:4623        Length:4623        Length:4623        Length:4623          Length:4623        Length:4623          
+#  Class :character   Class :character   Class :character   Class :character     Class :character   Class :character     
+#  Mode  :character   Mode  :character   Mode  :character   Mode  :character     Mode  :character   Mode  :character     
+                                                                                                                       
+#     Effect          Effect Measurement   Endpoint         Response Site      Observed Duration (Days)
+#  Length:4623        Length:4623        Length:4623        Length:4623        Length:4623             
+#  Class :character   Class :character   Class :character   Class :character   Class :character        
+#  Mode  :character   Mode  :character   Mode  :character   Mode  :character   Mode  :character        
+                                                                                                    
+#  Observed Duration Units (Days)    Author          Reference Number    Title              Source          Publication Year
+#  Length:4623                    Length:4623        Min.   :   344   Length:4623        Length:4623        Min.   :1982    
+#  Class :character               Class :character   1st Qu.:108459   Class :character   Class :character   1st Qu.:2005    
+#  Mode  :character               Mode  :character   Median :165559   Mode  :character   Mode  :character   Median :2010    
+#                                                    Mean   :142189                                         Mean   :2008    
+#                                                    3rd Qu.:168998                                         3rd Qu.:2013    
+#                                                    Max.   :180410                                         Max.   :2019    
+#  Summary of Additional Parameters
+#  Length:4623                     
+#  Class :character                
+#  Mode  :character                
 
 ```
 
 6.  Using the `summary` function on the "Effect" column, determine the most common effects that are studied. Why might these effects specifically be of interest?
 
 ```{r}
+summary(Neonics$Effect)
+#   Length     Class      Mode 
+#   4623     character   character 
+
+summary(Neonics$Effect, common_name)
+
 
 ```
 
-> Answer:
+> Answer:Because xxx
 
 
 7.  Using the `summary` function, determine the six most commonly studied species in the dataset (common name). What do these species have in common, and why might they be of interest over other insects? Feel free to do a brief internet search for more information if needed.[TIP: The `sort()` command can sort the output of the summary command...]
@@ -98,6 +139,10 @@ View(Neonics)
 9.  Using `geom_freqpoly`, generate a plot of the number of studies conducted by publication year.
 
 ```{r}
+Publication_Year <- c("Neonics$Publication Year")
+
+ggplot(Neonics) +
+  geom_freqpoly(aes(x = Publication_Year), bins = 50)
 
 ```
 
