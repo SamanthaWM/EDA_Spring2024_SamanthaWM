@@ -73,33 +73,7 @@ summary(Neonics)
 #  Median :138261413   Mode  :character   Mode  :character   Mode  :character         Mode  :character   Mode  :character   
 #  Mean   :147651982                                                                                                        
 #  3rd Qu.:153719234                                                                                                        
-#  Max.   :210880925                                                                                                            
-#  Species Common Name Species Group      Organism Lifestage Organism Age       Organism Age Units Exposure Type     
-#  Length:4623         Length:4623        Length:4623        Length:4623        Length:4623        Length:4623       
-#  Class :character    Class :character   Class :character   Class :character   Class :character   Class :character  
-#  Mode  :character    Mode  :character   Mode  :character   Mode  :character   Mode  :character   Mode  :character  
-                                                                                                                   
-#   Media Type        Test Location      Number of Doses    Conc 1 Type (Author) Conc 1 (Author)    Conc 1 Units (Author)
-#  Length:4623        Length:4623        Length:4623        Length:4623          Length:4623        Length:4623          
-#  Class :character   Class :character   Class :character   Class :character     Class :character   Class :character     
-#  Mode  :character   Mode  :character   Mode  :character   Mode  :character     Mode  :character   Mode  :character     
-                                                                                                                       
-#     Effect          Effect Measurement   Endpoint         Response Site      Observed Duration (Days)
-#  Length:4623        Length:4623        Length:4623        Length:4623        Length:4623             
-#  Class :character   Class :character   Class :character   Class :character   Class :character        
-#  Mode  :character   Mode  :character   Mode  :character   Mode  :character   Mode  :character        
-                                                                                                    
-#  Observed Duration Units (Days)    Author          Reference Number    Title              Source          Publication Year
-#  Length:4623                    Length:4623        Min.   :   344   Length:4623        Length:4623        Min.   :1982    
-#  Class :character               Class :character   1st Qu.:108459   Class :character   Class :character   1st Qu.:2005    
-#  Mode  :character               Mode  :character   Median :165559   Mode  :character   Mode  :character   Median :2010    
-#                                                    Mean   :142189                                         Mean   :2008    
-#                                                    3rd Qu.:168998                                         3rd Qu.:2013    
-#                                                    Max.   :180410                                         Max.   :2019    
-#  Summary of Additional Parameters
-#  Length:4623                     
-#  Class :character                
-#  Mode  :character                
+#  Max.   :210880925
 
 ```
 
