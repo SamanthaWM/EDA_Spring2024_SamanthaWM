@@ -205,28 +205,47 @@ unique(Litter$collectDate)
 13. Using the `unique` function, determine how many plots were sampled at Niwot Ridge. How is the information obtained from `unique` different from that obtained from `summary`?
 
 ```{r}
+unique(Litter)
+# A tibble: 188 × 19
 
+summary(Litter)
+#Length:188
 
 ```
 
-> Answer:
+> Answer: In `unique` function the entire summary of the columns is not displayded (Use `print(n = ...)` to see more rows) vs. the summarey function. in addition the information is not stadisticaly shown in like in summary. 
 
 14. Create a bar graph of functionalGroup counts. This shows you what type of litter is collected at the Niwot Ridge sites. Notice that litter types are fairly equally distributed across the Niwot Ridge sites.
 
 ```{r}
+library(ggplot2)
+
+geom_bar(aes(Litter$functionalGroup))
+
+ggplot(Litter) +
+  geom_bar(aes(x = functionalGroup))
+
 
 ```
 
 15. Using `geom_boxplot` and `geom_violin`, create a boxplot and a violin plot of dryMass by functionalGroup.
 
 ```{r}
+library(ggplot2)
+
+ggplot(Litter) +
+  geom_boxplot(aes(x = dryMass, y = functionalGroup))
+
+ggplot(Litter) +
+  geom_violin(aes(x = dryMass, y = functionalGroup))
+
 
 ```
 
 Why is the boxplot a more effective visualization option than the violin plot in this case?
 
-> Answer:
+> Answer:Because it shows stadistics of the data. Allowing a better interpretation of it. 
 
 What type(s) of litter tend to have the highest biomass at these sites?
 
-> Answer:
+> Answer:The needles are the ones with more dry bymass followed by twigs/branches.
