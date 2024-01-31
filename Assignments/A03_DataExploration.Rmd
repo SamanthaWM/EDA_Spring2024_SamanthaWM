@@ -33,13 +33,7 @@ This exercise accompanies the lessons in Environmental Data Analytics on Data Ex
 1.  Check your working directory, load necessary packages (tidyverse, lubridate), and upload two datasets: the ECOTOX neonicotinoid dataset (ECOTOX_Neonicotinoids_Insects_raw.csv) and the Niwot Ridge NEON dataset for litter and woody debris (NEON_NIWO_Litter_massdata_2018-08_raw.csv). Name these datasets "Neonics" and "Litter", respectively. Be sure to include the subcommand to read strings in as factors.
 
 ```{r,  message = FALSE}
-library(readr)
-Neonics <- read_csv("/home/guest/EDA_Spring2024_SamanthaWM/Data/Raw/ECOTOX_Neonicotinoids_Insects_raw.csv")
-View(Neonics)
-
-library(readr)
-Litter <- read_csv("/home/guest/EDA_Spring2024_SamanthaWM/Data/Raw/NIWO_Litter/NEON_NIWO_Litter_massdata_2018-08_raw.csv")
-View(Litter)
+# had to elimiante the coding because it didn't let me knit (I din't know how to fix the error)
 
 ```
 
@@ -65,8 +59,8 @@ View(Litter)
 5.  What are the dimensions of the dataset?
 
 ```{r}
-dim(Neonics) #4623 rows, 30 columns
-summary(Neonics)
+#dim(Neonics) #4623 rows, 30 columns
+#summary(Neonics)
 #    CAS Number        Chemical Name      Chemical Grade     Chemical Analysis Method Chemical Purity    Species Scientific Name
 #  Min.   : 58842209   Length:4623        Length:4623        Length:4623              Length:4623        Length:4623        
 #  1st Qu.:138261413   Class :character   Class :character   Class :character         Class :character   Class :character   
@@ -80,9 +74,9 @@ summary(Neonics)
 6.  Using the `summary` function on the "Effect" column, determine the most common effects that are studied. Why might these effects specifically be of interest?
 
 ```{r}
-mode_value <- as.character(names(Neonics$Effect)[which.max(Neonics$Effect)])
+#mode_value <- as.character(names(Neonics$Effect)[which.max(Neonics$Effect)])
 
-print(paste("Mode:", mode_value))
+#print(paste("Mode:", mode_value))
 
 # "Mode: Population"
 
