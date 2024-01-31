@@ -80,9 +80,9 @@ summary(Neonics)
 6.  Using the `summary` function on the "Effect" column, determine the most common effects that are studied. Why might these effects specifically be of interest?
 
 ```{r}
-#mode_value <- as.character(names(Neonics$Effect)[which.max(Neonics$Effect)])
+mode_value <- as.character(names(Neonics$Effect)[which.max(Neonics$Effect)])
 
-#print(paste("Mode:", mode_value))
+print(paste("Mode:", mode_value))
 
 # "Mode: Population"
 
@@ -93,7 +93,7 @@ summary(Neonics)
 
 7.  Using the `summary` function, determine the six most commonly studied species in the dataset (common name). What do these species have in common, and why might they be of interest over other insects? Feel free to do a brief internet search for more information if needed.[TIP: The `sort()` command can sort the output of the summary command...]
 
-```{r}
+```{r, results='hide'}
 categorical_summary <- function(column) {
   freq_table <- table(column)
   cat("Frequency Table:\n")
@@ -137,9 +137,9 @@ ggplot(Neonics) +
 ```{r}
 library(ggplot2)
 
-ggplot(Neonics) +
-  geom_freqpoly(aes(x = `Publication Year`, y = `Test Location`), color = "lightblue", size = 1)
-
+ggplot(Neonics, aes(x = `Publication Year`, color = `Test Location`)) +
+  geom_freqpoly(binwidth = 1, size = 1) +
+  facet_wrap(~`Test Location`, scales = "free_y")
               
 ```
 
@@ -167,7 +167,7 @@ ggplot(Neonics) +
 
 12. Determine the class of collectDate. Is it a date? If not, change to a date and confirm the new class of the variable. Using the `unique` function, determine which dates litter was sampled in August 2018.
 
-```{r}
+```{r, results='hide'}
 class(Litter$collectDate)
 # It is a Date
 
