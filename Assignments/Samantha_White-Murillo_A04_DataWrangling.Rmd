@@ -44,7 +44,6 @@ setwd("/home/guest/EDA_Spring2024_SamanthaWM/")
 
 ```{r setup, message = FALSE, results='hide'}
 
-here()
 #1c 
 library(readr)
 EPAair_O3_NC2018_raw <- read.csv(
