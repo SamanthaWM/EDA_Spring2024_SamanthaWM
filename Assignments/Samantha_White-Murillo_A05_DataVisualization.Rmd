@@ -1,6 +1,6 @@
 ---
 title: "Assignment 5: Data Visualization"
-author: "Student Name"
+author: "Samantha_White-Murillo"
 date: "Spring 2024"
 output: pdf_document
 geometry: margin=2.54cm
@@ -15,7 +15,7 @@ editor_options:
 This exercise accompanies the lessons in Environmental Data Analytics on Data Visualization 
 
 ## Directions
-1. Rename this file `<FirstLast>_A05_DataVisualization.Rmd` (replacing `<FirstLast>` with your first and last name).
+1. Rename this file `Samantha_White-Murillo_A05_DataVisualization.Rmd` (replacing `<FirstLast>` with your first and last name).
 2. Change "Student Name" on line 3 (above) with your name.
 3. Work through the steps, **creating code and output** that fulfill each instruction.
 4. Be sure your code is tidy; use line breaks to ensure your code fits in the knitted output.
@@ -30,10 +30,37 @@ This exercise accompanies the lessons in Environmental Data Analytics on Data Vi
 
 2. Make sure R is reading dates as date format; if not change the format to date.
 
-```{r initialize project}
+```{r initialize project, results='hide'}
 #1 
+library(tidyverse)
+library(lubridate)
+library(here)
+library(cowplot)
 
+install.packages("conflicted")
+library(conflicted)
+conflict_prefer("filter", "dplyr")
+conflict_prefer("lag", "dplyr")
+
+here()
+
+PeterPaul.chem.nutrients <- 
+  read.csv(
+    file = here("Data/Processed_KEY/NTL-LTER_Lake_Chemistry_Nutrients_PeterPaul_Processed.csv"), 
+           stringsAsFactors = TRUE)
+
+NiwotRidge.litter <- 
+  read.csv(
+    file = here("Data/Processed_KEY/NEON_NIWO_Litter_mass_trap_Processed.csv", 
+              stringsAsFactors = TRUE))
+                         #this one is not working
+                         #NiwotRidge.litter <- NEON_NIWO_Litter_mass_trap_Processed
+  
 #2 
+class(PeterPaul.chem.nutrients$sampledate)
+class(NiwotRidge.litter$collectDate) #is a date factor
+
+PeterPaul.chem.nutrients$sampledate <- ymd(PeterPaul.chem.nutrients$sampledate)
 
 ```
 ## Define your theme
@@ -46,6 +73,7 @@ This exercise accompanies the lessons in Environmental Data Analytics on Data Vi
 
 ```{r build plot theme}
 #3
+
 
 ```
 
