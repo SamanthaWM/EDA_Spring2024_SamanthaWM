@@ -74,7 +74,9 @@ PeterPaul.chem.nutrients$sampledate <- ymd(PeterPaul.chem.nutrients$sampledate)
 ```{r build plot theme}
 #3
 mytheme <- theme_light(base_size = 10) +
-  theme(plot.title = element_text(family = "Serif Fonts", face = "bold", size = 20, color = "purple"),
+  theme(plot.title = element_text(family = "Serif Fonts", 
+                                  face = "bold", size = 20, 
+                                  color = "lightblue"),
         axis.title = element_text(color = "darkblue", )
         ) +
   theme(legend.position = "bottom")
@@ -86,7 +88,7 @@ For numbers 4-7, create ggplot graphs and adjust aesthetics to follow best pract
 
 4. [NTL-LTER] Plot total phosphorus (`tp_ug`) by phosphate (`po4`), with separate aesthetics for Peter and Paul lakes. Add line(s) of best fit using the `lm` method. Adjust your axes to hide extreme values (hint: change the limits using `xlim()` and/or `ylim()`).
 
-```{r plot total P vs PO4, results='hide'}
+```{r plot total P vs PO4}
 #4 
 PeterPaul_plot <- 
   ggplot(subset(PeterPaul.chem.nutrients, depth == 0),
@@ -117,6 +119,32 @@ Tips:
 
 ```{r Create boxplots}
 #5 
+install.packages("cowplot")
+library(cowplot)
+
+Temperature <- ggplot(PeterPaul.chem.nutrients, 
+                      aes(x = month, 
+                          y = temperature_C, 
+                          color = lakename)) +
+  geom_point() +
+  mytheme
+
+TP <- ggplot(PeterPaul.chem.nutrients, 
+             aes(x = month, 
+                 y = tp_ug, 
+                 color = lakename)) +
+  geom_point() +
+  mytheme
+
+TN <- ggplot(PeterPaul.chem.nutrients, 
+             aes(x = month, 
+                 y = tn_ug, 
+                 color = lakename)) +
+  geom_point() +
+  mytheme
+
+
+Temperature_TP_TN <- plot_grid(Temperature, TP, TN)
 
 ```
 
