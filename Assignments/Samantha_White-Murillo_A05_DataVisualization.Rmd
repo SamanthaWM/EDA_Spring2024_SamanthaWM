@@ -44,23 +44,21 @@ conflict_prefer("lag", "dplyr")
 
 here()
 
-PeterPaul.chem.nutrients <- 
-  read.csv(
+PeterPaul.chem.nutrients <- read.csv(
     file = here("Data/Processed_KEY/NTL-LTER_Lake_Chemistry_Nutrients_PeterPaul_Processed.csv"), 
-           stringsAsFactors = TRUE)
+    stringsAsFactors = TRUE)
 
-NiwotRidge.litter <- 
-  read.csv(
-    file = here("Data/Processed_KEY/NEON_NIWO_Litter_mass_trap_Processed.csv", 
-              stringsAsFactors = TRUE))
-                         #this one is not working
-                         #NiwotRidge.litter <- NEON_NIWO_Litter_mass_trap_Processed
-  
+NiwotRidge.litter <- read.csv(
+  file = here("Data/Processed_KEY/NEON_NIWO_Litter_mass_trap_Processed.csv"), 
+  stringsAsFactors = TRUE
+)
+
 #2 
 class(PeterPaul.chem.nutrients$sampledate)
-class(NiwotRidge.litter$collectDate) #is a date factor
+class(NiwotRidge.litter$collectDate)
 
 PeterPaul.chem.nutrients$sampledate <- ymd(PeterPaul.chem.nutrients$sampledate)
+NiwotRidge.litter$collectDate <- ymd(NiwotRidge.litter$collectDate)
 
 ```
 ## Define your theme
@@ -75,8 +73,8 @@ PeterPaul.chem.nutrients$sampledate <- ymd(PeterPaul.chem.nutrients$sampledate)
 #3
 mytheme <- theme_light(base_size = 10) +
   theme(plot.title = element_text(family = "Serif Fonts", 
-                                  face = "bold", size = 20, 
-                                  color = "lightblue"),
+                                  face = "bold", size = 15, 
+                                  color = "purple"),
         axis.title = element_text(color = "darkblue", )
         ) +
   theme(legend.position = "bottom")
@@ -96,9 +94,9 @@ PeterPaul_plot <-
              y = tp_ug)) +
   geom_point() +
   facet_wrap(vars(lakename)) +
-  labs(x = "Phosphorous") +
-  labs(y = "Phosphate") +
-  labs(title = "P vs P04") +
+  labs(x = "Phosphorous", 
+       y = "Phosphate", 
+       title = "P vs P04") +
   geom_smooth(method = lm) +
   mytheme +
   xlim(0, 15) +
@@ -119,38 +117,48 @@ Tips:
 
 ```{r Create boxplots}
 #5 
-install.packages("cowplot")
 library(cowplot)
 
 Temperature <- ggplot(PeterPaul.chem.nutrients, 
-                      aes(x = month, 
-                          y = temperature_C, 
-                          color = lakename)) +
+              aes(x = month, 
+                  y = temperature_C, 
+                  color = lakename)) +
   geom_point() +
-  mytheme
+  labs(x = "Month", y = "Temperature", color = "Lake Name") +
+  mytheme +
+  theme(legend.position = "right")
+
 
 TP <- ggplot(PeterPaul.chem.nutrients, 
              aes(x = month, 
                  y = tp_ug, 
                  color = lakename)) +
   geom_point() +
-  mytheme
+  labs(x = "Month", y = "Phosphate") +
+  mytheme +
+  theme(legend.position = "none") +
+  ylim(0, max(PeterPaul.chem.nutrients$tp_ug, na.rm = TRUE))
+
 
 TN <- ggplot(PeterPaul.chem.nutrients, 
              aes(x = month, 
                  y = tn_ug, 
                  color = lakename)) +
   geom_point() +
-  mytheme
+  labs(x = "Month", y = "Nitrogen") +
+  mytheme +
+  theme(legend.position = "none")
 
 
-Temperature_TP_TN <- plot_grid(Temperature, TP, TN)
+Temperature_TP_TN <- plot_grid(TP, TN, Temperature) +
+  labs(title = "Temperature TP TN")
+print(Temperature_TP_TN)
 
 ```
 
 Question: What do you observe about the variables of interest over seasons and between lakes? 
 
-> Answer: 
+> Answer: Concentrations for phosphorous and nitrogen are higher in Peter Lake than Paul Lake. The month registered with warmest temperatures was July, coincidentally for Peter Lake, that's the month with the most phosphorous level registered. Also is important to mention that the data is only registered for summer and begining of fall season (making it dificutl to make seasonal comparations). 
 
 6. [Niwot Ridge] Plot a subset of the litter dataset by displaying only the "Needles" functional group. Plot the dry mass of needle litter by date and separate by NLCD class with a color aesthetic. (no need to adjust the name of each land use)
 
@@ -158,12 +166,32 @@ Question: What do you observe about the variables of interest over seasons and b
 
 ```{r Plot litter}
 #6
+Needle_litter <- NiwotRidge.litter %>%
+                    filter(functionalGroup == "Needles") %>%
+                    ggplot(aes(x = collectDate, 
+                               y = dryMass, 
+                               color = nlcdClass)) + 
+                    geom_point() +
+  labs(x = "Date", y = "Dry Mass", color = "Land Cover",
+       title = "Needle litter") +
+  mytheme
 
+print(Needle_litter)
 
 #7
+Needle_litter_facets <- NiwotRidge.litter %>%
+                    filter(functionalGroup == "Needles") %>%
+                    ggplot(aes(x = collectDate, 
+                               y = dryMass, 
+                               shape = nlcdClass)) + 
+                    geom_point() +
+  labs(x = "Date", y = "Dry Mass", shape = "Land Cover",
+       title = "Needle litter faced") +
+  mytheme
 
+print(Needle_litter_facets)
 
 ```
 Question: Which of these plots (6 vs. 7) do you think is more effective, and why? 
 
-> Answer:
+> Answer:I consider the color clasification is more efective in this case because the data number is broad and sometimes oberlaps, making it dificult to differ whit the same color shapes. Maybe with less data and only two Land Covers, shape would be a more efective option.
