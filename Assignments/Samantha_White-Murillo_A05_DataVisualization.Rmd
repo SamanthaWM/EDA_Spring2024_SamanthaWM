@@ -37,11 +37,6 @@ library(lubridate)
 library(here)
 library(cowplot)
 
-install.packages("conflicted")
-library(conflicted)
-conflict_prefer("filter", "dplyr")
-conflict_prefer("lag", "dplyr")
-
 here()
 
 PeterPaul.chem.nutrients <- read.csv(
@@ -72,8 +67,7 @@ NiwotRidge.litter$collectDate <- ymd(NiwotRidge.litter$collectDate)
 ```{r build plot theme}
 #3
 mytheme <- theme_light(base_size = 10) +
-  theme(plot.title = element_text(family = "Serif Fonts", 
-                                  face = "bold", size = 15, 
+  theme(plot.title = element_text(face = "bold", size = 15, 
                                   color = "purple"),
         axis.title = element_text(color = "darkblue", )
         ) +
@@ -88,7 +82,7 @@ For numbers 4-7, create ggplot graphs and adjust aesthetics to follow best pract
 
 ```{r plot total P vs PO4}
 #4 
-PeterPaul_plot <- 
+PeterPaul_plot <-  
   ggplot(subset(PeterPaul.chem.nutrients, depth == 0),
          aes(x = po4, 
              y = tp_ug)) +
@@ -164,7 +158,7 @@ Question: What do you observe about the variables of interest over seasons and b
 
 7. [Niwot Ridge] Now, plot the same plot but with NLCD classes separated into three facets rather than separated by color. 
 
-```{r Plot litter}
+```{r Plot litter, results='hide'}
 #6
 Needle_litter <- NiwotRidge.litter %>%
                     filter(functionalGroup == "Needles") %>%
