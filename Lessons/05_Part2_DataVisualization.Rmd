@@ -240,3 +240,16 @@ ggplot(Neonics) +
 
 
 ```
+
+
+
+```{r}
+#assignment 5 note
+  geom_smooth(method = lm) +
+  geom_hline(yintercept = 5, lty = 3) +
+  geom_hline(yintercept = 15, lty = 3) +
+  geom_hline(yintercept = 30, lty = 3) +
+  geom_vline(xintercept = 5, lty = 3, color = "lightblue") +
+  geom_vline(xintercept = 10, lty = 3, color = "lightblue") +
+  geom_vline(xintercept = 15, lty = 3, color = "lightblue") +
+```
