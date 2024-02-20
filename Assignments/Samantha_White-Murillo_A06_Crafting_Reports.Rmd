@@ -4,9 +4,11 @@ author: "Samantha White-Murillo"
 date: "Spring 2024"
 output: 
   pdf_document:
-    fig_caption: TRUE
+   fig_caption: true
 toc: "Conent"
 ---
+
+\listoffigures
 
 ## Objectives:
 
@@ -37,8 +39,6 @@ Table 1: EPA Air Quality
 | Filename  | EPAair_O3_PM25_NC1819_Processed.csv |
 
 ------------------------------------------------------------------------
-
-\newpage
 
 ## Task 2 - Import packages and data, suppressing messages
 
@@ -113,9 +113,9 @@ EPA_ozone_2018 <- epa_data %>%
 ```
 
 
-```{r Ozone 2018, echo=FALSE, fig.cap= "Ozone levels in 2018", fig.align='center', warning=FALSE, out.width='65%'}
+```{r Ozone 2018, echo=FALSE, fig.align='center', fig.cap="Ozone levels in 2018", warning=FALSE, out.width='65%'}
 
-ggplot(EPA_ozone_2018, aes(x = Month, y = Ozone)) +
+ggplot(EPA_ozone_2018, aes(x = as.factor(Month), y = Ozone)) +
   geom_boxplot() +
   labs(y = "Concentration (µg/m3)")
 
@@ -129,9 +129,9 @@ EPA_ozone_2019 <- epa_data %>%
 ```
 
 
-```{r Ozone 2019, echo=FALSE, fig.cap= "Ozone levels in 2019", fig.align='center', warning=FALSE, out.width='65%'}
+```{r Ozone 2019, echo=FALSE, fig.align='center', fig.cap="Ozone levels in 2019", warning=FALSE, out.width='65%'}
 
-ggplot(EPA_ozone_2019, aes(x = Month, y = Ozone)) +
+ggplot(EPA_ozone_2019, aes(x = as.factor(Month), y = Ozone)) +
   geom_boxplot() +
  labs(y = "Concentration (µg/m3)")
 
@@ -147,4 +147,5 @@ Add a table of contents and list of figures to your document and knit to a PDF. 
 
 ## Git Repository
 
+https://github.com/SamanthaWM/EDA_Spring2024_SamanthaWM
 
