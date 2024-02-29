@@ -27,10 +27,25 @@ This exercise accompanies the lessons in Environmental Data Analytics on general
 
 ```{r setup2}
 #1
+library(tidyverse)
+library(lubridate)
+library(here)
+library(cowplot)
+library(agricolae)
 
+Lake_ChemsPhys <- read.csv(
+  here("Data/Raw/NTL-LTER_Lake_ChemistryPhysics_Raw.csv"),
+  stringsAsFactors = TRUE
+)%>%
+mutate(sampledate = mdy(sampledate))
 
 #2
-
+mytheme <- theme_classic(base_size = 12) +
+  theme(plot.title = element_text(face = "bold", size = 12,
+color = "black"),
+axis.title = element_text(color = "darkblue", )
+) +
+theme(legend.position = "bottom")
 
 ```
 
@@ -39,8 +54,9 @@ Our first research question is: Does mean lake temperature recorded during July 
 
 3. State the null and alternative hypotheses for this question:
 > Answer:
-H0: 
-Ha: 
+H0: Mean lake temperature recorded during July does change with depth across all lakes.
+Ha: Mean lake temperature recorded during July does change with depth across some lakes.
+Hb: Mean lake temperature recorded during July does NOT change with depth across all lakes
 
 
 4.  Wrangle your NTL-LTER dataset with a pipe function so that the records meet the following criteria: 
@@ -50,12 +66,25 @@ Ha:
 
 5. Visualize the relationship among the two continuous variables with a scatter plot of temperature by depth. Add a smoothed line showing the linear model, and limit temperature values from 0 to 35 °C. Make this plot look pretty and easy to read.
 
-```{r scatterplot}
+```{r scatterplot, fig.cap= "Temperature vs. Depht"}
 #4
-
+Lake_ChemsPhys_processed <- Lake_ChemsPhys %>%
+  filter(month(sampledate) == 7) %>%
+  select(lakename, year4, daynum, depth, temperature_C) %>%
+  drop_na()
 
 #5
-
+Lake_ChemsPhys_plot <- ggplot(Lake_ChemsPhys_processed, 
+                              aes(x = temperature_C, 
+                                  y = depth)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "orange") +
+  scale_y_log10() +
+  xlim(0, 35) +
+  labs(x = "Temperature (°C)", 
+       y = "Depth") +
+  mytheme
+print(Lake_ChemsPhys_plot)
 
 ```
 
