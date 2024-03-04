@@ -197,6 +197,8 @@ Paul.naomit <- PeterPaul.chem.nutrients %>%
   filter(lakename == "Paul Lake") %>%
   na.omit()
 
+
+
 TPAIC <- lm(data = Paul.naomit, tp_ug ~ depth + dissolvedOxygen + 
               temperature_C + tn_ug + po4)
 
