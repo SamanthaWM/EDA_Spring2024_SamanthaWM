@@ -182,7 +182,20 @@ plot(ChemsPhys_lm_model)
 
 ```{r scatterplot.2}
 #14.
+library(ggplot2)
 
+ggplot(Lake_ChemsPhys_processed, 
+       aes(x = temperature_C,
+           y = depth, 
+           color = lakename)) +
+  geom_point(alpha = 0.5) + 
+  geom_smooth(method = "lm", se = FALSE) +
+  xlim(0, 35) +
+  labs(x = "Temperature (°C)",
+       y = "Depth",
+       color = "Lake") +
+  mytheme +
+  theme(legend.position = "bottom")
 
 ```
 
@@ -190,7 +203,8 @@ plot(ChemsPhys_lm_model)
 
 ```{r tukey.test}
 #15
-
+lakes_means <- TukeyHSD(ChemsPhys_anova_model, "lakename")
+summary(lakes_means)
 
 ```
 
