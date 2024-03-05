@@ -27,6 +27,22 @@ This exercise accompanies the lessons in Environmental Data Analytics on general
 * Set your ggplot theme
 
 ```{r}
+here()
+  
+library(tidyverse)
+library(lubridate)
+library(trend)
+library(zoo)
+library(tseries)
+library(here)
+library(dplyr)
+
+mytheme <- theme_classic(base_size = 12) +
+  theme(plot.title = element_text(face = "bold", size = 10, color = "black"),
+axis.title = element_text(color = "darkblue", )
+) +
+theme(legend.position = "bottom")
+
 
 ```
 
@@ -35,6 +51,27 @@ This exercise accompanies the lessons in Environmental Data Analytics on general
 
 ```{r, message = FALSE}
 #1
+EPAair2010 <- read.csv("Data/Raw/Ozone_TimeSeries/EPAair_O3_GaringerNC2010_raw.csv", stringsAsFactors = TRUE)
+EPAair2011 <- read.csv("Data/Raw/Ozone_TimeSeries/EPAair_O3_GaringerNC2011_raw.csv", stringsAsFactors = TRUE)
+EPAair2012 <- read.csv("Data/Raw/Ozone_TimeSeries/EPAair_O3_GaringerNC2012_raw.csv", stringsAsFactors = TRUE)
+EPAair2013 <- read.csv("Data/Raw/Ozone_TimeSeries/EPAair_O3_GaringerNC2013_raw.csv", stringsAsFactors = TRUE)
+EPAair2014 <- read.csv("Data/Raw/Ozone_TimeSeries/EPAair_O3_GaringerNC2014_raw.csv", stringsAsFactors = TRUE)
+EPAair2015 <- read.csv("Data/Raw/Ozone_TimeSeries/EPAair_O3_GaringerNC2015_raw.csv", stringsAsFactors = TRUE)
+EPAair2016 <- read.csv("Data/Raw/Ozone_TimeSeries/EPAair_O3_GaringerNC2016_raw.csv", stringsAsFactors = TRUE)
+EPAair2017 <- read.csv("Data/Raw/Ozone_TimeSeries/EPAair_O3_GaringerNC2017_raw.csv", stringsAsFactors = TRUE)
+EPAair2018 <- read.csv("Data/Raw/Ozone_TimeSeries/EPAair_O3_GaringerNC2018_raw.csv", stringsAsFactors = TRUE)
+EPAair2019 <- read.csv("Data/Raw/Ozone_TimeSeries/EPAair_O3_GaringerNC2019_raw.csv", stringsAsFactors = TRUE)
+
+Ozone_TimeSeries <- rbind(EPAair2010, 
+                          EPAair2011,
+                          EPAair2012,
+                          EPAair2013,
+                          EPAair2014,
+                          EPAair2015,
+                          EPAair2016,
+                          EPAair2017,
+                          EPAair2018,
+                          EPAair2019)
 
 ```
 
@@ -50,13 +87,29 @@ This exercise accompanies the lessons in Environmental Data Analytics on general
 
 ```{r}
 # 3
+Ozone_TimeSeries$Date <- mdy(Ozone_TimeSeries$Date)
 
 # 4
+OzoneConcen <- Ozone_TimeSeries %>%
+  select(
+    Date,
+    Daily.Max.8.hour.Ozone.Concentration,
+    DAILY_AQI_VALUE)
 
 # 5
+min_date <- min(OzoneConcen$Date, na.rm = TRUE)
+max_date <- max(OzoneConcen$Date, na.rm = TRUE)
+
+num_days <- as.numeric(max_date - min_date)
+Days <- seq(min_date, 
+            by = "day", 
+            length.out = num_days + 1) %>%
+  as.data.frame()
+
+colnames(Days) <- "Date"
 
 # 6
-
+GaringerOzone <- left_join(Days, OzoneConcen, by = "Date")
 
 ```
 
