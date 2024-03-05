@@ -1,6 +1,6 @@
 ---
 title: "Assignment 7: GLMs (Linear Regressios, ANOVA, & t-tests)"
-author: "Student Name"
+author: "Samantha White-Murillo"
 date: "Spring 2024"
 output: pdf_document
 geometry: margin=2.54cm
@@ -91,7 +91,7 @@ print(Lake_ChemsPhys_plot)
 
 6. Interpret the figure. What does it suggest with regards to the response of temperature to depth? Do the distribution of points suggest about anything about the linearity of this trend?
 
-> Answer: I NEED TO ANSWER THESE
+> Answer: It shows that the greater the depth, the lower the temperature.  Nevertheless, the correlation is not directly proportional, meaning that at a medium depth range the temperature is relatively constant.
 
 
 7. Perform a linear regression to test the relationship and display the results.
@@ -109,8 +109,8 @@ summary(Lake_ChemsPhys_linear)
 
 8. Interpret your model results in words. Include how much of the variability in temperature is explained by changes in depth, the degrees of freedom on which this finding is based, and the statistical significance of the result. Also mention how much temperature is predicted to change for every 1m change in depth. 
 
-> Answer: I NEED TO ANSWER THESE
-
+> Answer: The estimated mean temperature when the depth is zero is 21.96. Also, the the estimated change in temperature for a one-unit increase in depth is -1.95. 
+On the other hand,  approximately 73.87% of the variability in temperature is caused by changes in depth. The F-statistic is 2.75e+04 with a very low p-value, indicating that the regression model is statistically significant.
 
 ---
 
@@ -147,9 +147,7 @@ plot(recommended_model)
 
 11. What is the final set of explanatory variables that the AIC method suggests we use to predict temperature in our multiple regression? How much of the observed variance does this model explain? Is this an improvement over the model using only depth as the explanatory variable?
 
-> Answer: I NEED TO ANSWER THESE
-
-
+> Answer: 
 
 ---
 ## Analysis of Variance
