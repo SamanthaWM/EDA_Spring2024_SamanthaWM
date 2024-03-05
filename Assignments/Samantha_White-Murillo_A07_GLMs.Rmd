@@ -206,24 +206,37 @@ ggplot(Lake_ChemsPhys_processed,
 lakes_means <- TukeyHSD(ChemsPhys_anova_model, "lakename")
 summary(lakes_means)
 
+anova_model <- aov(data = Lake_ChemsPhys_processed, 
+                   temperature_C ~ lakename)
+tukey_lakes_means <- TukeyHSD(anova_model, "lakename")
+summary(tukey_lakes_means)
+view(tukey_lakes_means)
+
+
 ```
 
 16.From the findings above, which lakes have the same mean temperature, statistically speaking, as Peter Lake? Does any lake have a mean temperature that is statistically distinct from all the other lakes?
 
->Answer:
-
- 
+>Answer:Lakes with no statistically significant difference in mean temperature compared to Peter Lake are 
+- Ward Lake
+- Crampton Lake
+- Tuesday Lake
+- West Long Lake
+Several pairs of lakes have p-values less than 0.05, indicating statistically significant differences in mean temperatures between them. However, there isn't a single lake that is statistically distinct from all the other lakes.
 
 17. If we were just looking at Peter Lake and Paul Lake. What's another test we might explore to see whether they have distinct mean temperatures? 
 
->Answer: 
+>Answer: We can consider conducting an independent samples t-test. This test would allow us to assess whether there is a statistically significant difference in mean temperatures between these two lakes.
 
-
-
-18. Wrangle the July data to include only records for Crampton Lake and Ward Lake. Run the two-sample T-test on these data to determine whether their July temperature are same or different. What does the test say? Are the mean temperatures for the lakes equal? Does that match you answer for part 16?
+18. Wrangle the July data to include only records for Crampton Lake and Ward Lake. Run the two-sample T-test on these data to determine whether their July temperature are same or different. What does the test say? Are the mean temperatures for the lakes equal? Does that match your answer for part 16?
 
 ```{r t.test}
+CramWarLake <- Lake_ChemsPhys_processed %>%
+  filter(lakename %in% c("Crampton Lake", "Ward Lake"))
 
+CramWarLake_Ttest <- t.test(data = CramWarLake,
+                             temperature_C ~ lakename)
+view(CramWarLake_Ttest)
 ```
 
->Answer: 
+>Answer: It shows that Crampton Lake and Ward Lake have the same temperature values. These result is interesting because from section 16, these lakes have the same the same mean temperature as Peter Lake.
