@@ -27,8 +27,6 @@ This exercise accompanies the lessons in Environmental Data Analytics on general
 * Set your ggplot theme
 
 ```{r}
-here()
-  
 library(tidyverse)
 library(lubridate)
 library(trend)
@@ -49,7 +47,7 @@ theme(legend.position = "bottom")
 
 2. Import the ten datasets from the Ozone_TimeSeries folder in the Raw data folder. These contain ozone concentrations at Garinger High School in North Carolina from 2010-2019 (the EPA air database only allows downloads for one year at a time). Import these either individually or in bulk and then combine them into a single dataframe named `GaringerOzone` of 3589 observation and 20 variables. 
 
-```{r, message = FALSE}
+```{r echo=FALSE, message=FALSE}
 #1
 EPAair2010 <- read.csv("Data/Raw/Ozone_TimeSeries/EPAair_O3_GaringerNC2010_raw.csv", stringsAsFactors = TRUE)
 EPAair2011 <- read.csv("Data/Raw/Ozone_TimeSeries/EPAair_O3_GaringerNC2011_raw.csv", stringsAsFactors = TRUE)
@@ -209,7 +207,7 @@ plot(GaringerOzone.monthly.ts.decomposed)
 ```{r}
 #12
 GaringerOzone.trend <- 
-  SeasonalMannKendall(GaringerOzone.monthly.ts)
+  Kendall::MannKendall(GaringerOzone.monthly.ts)
 
 summary(GaringerOzone.trend)
 
@@ -243,8 +241,9 @@ ggplot(GaringerOzone.monthly, aes(y = Mean_Ozone,
 ```{r}
 #15
 GaringerOzone.monthly.ts.component <-
-  as.data.frame(GaringerOzone.monthly.ts.decomposed$time.series[,1:3]) %>%
-  mutate(GaringerOzone.monthly.ts.component,
+  as.data.frame(GaringerOzone.monthly.ts.decomposed$time.series[,1:3])
+
+GaringerOzone.monthly.ts.component <- mutate(GaringerOzone.monthly.ts.component,
         Observed = GaringerOzone.monthly$Mean_Ozone,     
         Date = GaringerOzone.monthly$First_day_of_month)
 
