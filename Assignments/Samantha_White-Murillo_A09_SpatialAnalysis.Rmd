@@ -1,6 +1,6 @@
 ---
 title: "Assignment 9: Spatial Analysis in R"
-author: "Student Name"
+author: "Samantha White-Murillo"
 output: html_document
 ---
 
@@ -26,10 +26,14 @@ This exercise accompanies the lessons in Environmental Data Analytics (ENV872L) 
 
 ```{r Prepare workspace, error=F, warning=F}
 #1. 
-
+library(tidyverse)
+library(sf)
+library(leaflet)
+library(here)
+library(mapview)
 
 #2. 
-
+here()
 
 ```
 
@@ -43,20 +47,29 @@ In this exercise, we will be exploring stream gage height data in Nebraska corre
 
 ```{r Read the county data into an sf dataframe}
 #3. Read in Counties shapefile into an sf dataframe, filtering for just NE counties
+StreamGage <- st_read("/home/guest/EDA_Spring2024_SamanthaWM/Data/Spatial/cb_2018_us_county_20m.shp")
 
+NebraskaStream <- StreamGage %>%
+filter(STATEFP == 31)
 
 #4. Reveal the CRS of the counties features
 
+# CRS = NAD83, EPSG = 4269
+st_crs(NebraskaStream)
 
 #5. Plot the data
+plot(NebraskaStream)
+mapview(NebraskaStream)
 
 ```
 
 6. What is the EPSG code of the Counties dataset? Is this a geographic or a projected coordinate reference system? (Or, does this CRS use angular or planar coordinate units?) To what datum is this CRS associated? (Tip: look for the EPSG code on <https://spatialreference.org> and examine the link for "Well Known Text as HTML" or "Human-Readable OGC WKT"...)
 
 > ANSWER: 
-> 
-
+> The EPSG code for the dataset is 4269. 
+> Is a geographic CRS (GEOGRAPHIC_2D_CRS).
+> It uses angular coordinate units.
+> Is DATUM["North_American_Datum_1983"]
 
 ### Read in gage locations csv as a dataframe, then display the column names it contains
 
