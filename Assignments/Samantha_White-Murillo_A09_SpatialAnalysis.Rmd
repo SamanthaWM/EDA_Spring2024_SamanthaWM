@@ -26,11 +26,12 @@ This exercise accompanies the lessons in Environmental Data Analytics (ENV872L) 
 
 ```{r Prepare workspace, error=F, warning=F}
 #1. 
-library(tidyverse)
+library(tidyverse, quietly = TRUE)
 library(sf)
 library(leaflet)
 library(here)
 library(mapview)
+library(lubridate)
 
 #2. 
 here()
@@ -49,15 +50,15 @@ In this exercise, we will be exploring stream gage height data in Nebraska corre
 #3. Read in Counties shapefile into an sf dataframe, filtering for just NE counties
 StreamGage <- st_read("/home/guest/EDA_Spring2024_SamanthaWM/Data/Spatial/cb_2018_us_county_20m.shp")
 
-NebraskaStream <- StreamGage %>%
+NE.Counties <- StreamGage %>%
 filter(STATEFP == 31)
 
 #4. Reveal the CRS of the counties features
-st_crs(NebraskaStream)
+st_crs(NE.Counties)
 
 #5. Plot the data
-plot(NebraskaStream)
-mapview(NebraskaStream)
+plot(NE.Counties)
+mapview(NE.Counties)
 
 ```
 
@@ -79,7 +80,9 @@ Next we'll read in some USGS/NWIS gage location data added to the `Data/Raw` fol
 
 ```{r Read in USGS Gage Locations}
 #7. Read in gage locations csv as a dataframe
-NWIS_Site_Processed <- read.csv("/home/guest/EDA_Spring2024_SamanthaWM/Data/Raw/NWIS_SiteInfo_NE_RAW.csv", stringsAsFactors = TRUE)
+NWIS_Site_Processed <- read.csv("/home/guest/EDA_Spring2024_SamanthaWM/Data/Raw/NWIS_SiteInfo_NE_RAW.csv", 
+                                stringsAsFactors = TRUE,
+                                colClasses = c('site_no' = 'factor'))
 
 NWIS_Site_Processed$site_no <- as_factor(NWIS_Site_Processed$site_no)
 
@@ -127,7 +130,7 @@ names(NWIS_Site_sf)
 ```{r Plot the spatial features}
 #13. Plot the gage locations atop the county features
 ggplot() +
-  geom_sf(data = NebraskaStream, fill = "lightblue", color = "grey") +  
+  geom_sf(data = NE.Counties, fill = "lightblue", color = "grey") +  
   geom_sf(data = NWIS_Site_sf, color = "darkblue") + 
   labs(title = "NWIS Gage Locations in Nebraska",
        subtitle = "Samantha White-Murillo") +
@@ -152,19 +155,27 @@ Lastly, we want to attach some gage height data to our site locations. I've cons
 
 ```{r Read in gage site data}
 #14. Read the site flow data into a data frame
-NWIS_SiteFlowData_Processed <- read_csv("/home/guest/EDA_Spring2024_SamanthaWM//Data/Raw/NWIS_SiteFlowData_NE_RAW.csv")
+NWIS_SiteFlowData_Processed <- read.csv("/home/guest/EDA_Spring2024_SamanthaWM//Data/Raw/NWIS_SiteFlowData_NE_RAW.csv", 
+              stringsAsFactors = TRUE,
+              colClasses = c('site_no' = 'factor')) %>%
+  group_by(site_no, station_nm) %>%
+  summarise(mean_gage_ht = mean(gage_ht))
+
 
 #15. Show the column names
 names(NWIS_SiteFlowData_Processed)
 
 #16. Join the flow data to our NWIS gage location spatial dataframe
-
+NWIS_SiteFlowData_Joined <- NWIS_Site_sf %>%
+  left_join(NWIS_SiteFlowData_Processed,
+            by = c("site_no", "station_nm"))%>%
+  na.omit
 
 #17. Show the column names of the joined dataset
-
+names(NWIS_SiteFlowData_Joined)
 
 #18. Show the dimensions of this joined dataset
-
+dim(NWIS_SiteFlowData_Joined)
 
 ```
 
@@ -176,7 +187,8 @@ Now we can examine where the flooding appears most acute by visualizing gage hei
 
 ```{r map gage sites}
 #Map the points, sized by gage height
-
+mapview(NE.Counties, alpha.regions = 0) +  
+  mapview(NWIS_SiteFlowData_Joined, zcol = "mean_gage_ht")
 
 ```
 
@@ -194,10 +206,12 @@ Up next we will do some spatial analysis with our data. To prepare for this, we 
 
 ```{r spatial analysis}
 #20 Transform the counties and gage location datasets to UTM Zone 14
-
+counties_utm <- st_transform(NE.Counties, crs = st_crs("+init=epsg:32614"))
+gage_utm <- st_transform(NWIS_SiteFlowData_Joined, crs = st_crs("+init=epsg:32614"))
 
 #21 Plot the data
-
+mapview(counties_utm, alpha.regions = 0) +
+  mapview(gage_utm, zcol = "mean_gage_ht")
 
 ```
 
@@ -215,13 +229,19 @@ Now let's zoom into a particular county and examine the gages located there.
 
 ```{r spatial selection}
 #22 Select the county
-
+counties.sf_Lancaster <- counties_utm %>%
+  filter(NAME == 'Lancaster')
 
 #23 Spatially select gages within the selected county
-
+Lancaster_gages <- st_join(gage_utm, 
+                           counties.sf_Lancaster, 
+                           join = st_within)
 
 #24 Plot
-
-
+mapview(counties_utm, alpha.regions = 0) +
+  mapview(counties.sf_Lancaster, 
+          col.regions = 'yellow') +
+  mapview(Lancaster_gages,
+          col.regions = 'blue')
 
 ```
