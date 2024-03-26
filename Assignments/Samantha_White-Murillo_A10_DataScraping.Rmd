@@ -1,6 +1,6 @@
 ---
 title: "Assignment 10: Data Scraping"
-author: "Student Name"
+author: "Samantha White-Murillo"
 output: pdf_document
 ---
 
@@ -25,7 +25,15 @@ This exercise accompanies the lessons in Environmental Data Analytics on data sc
 
 ```{r 1. Project Setup, message = FALSE}
 #1 
+library(tidybayes)
+library(rvest)
+library(lubridate)
+library(viridis)
+library(here)
+library(dataRetrieval)
+library(tidycensus)
 
+here()
 
 ```
 
@@ -34,10 +42,13 @@ This exercise accompanies the lessons in Environmental Data Analytics on data sc
  * Scroll down and select the LWSP link next to Durham Municipality. 
  * Note the web address: <https://www.ncwater.org/WUDC/app/LWSP/report.php?pwsid=03-32-010&year=2022>
  
-Indicate this website as the as the URL to be scraped. (In other words, read the contents into an `rvest` webpage object.)
+Indicate this website as the URL to be scraped. (In other words, read the contents into an `rvest` webpage object.)
 
 ```{r set.the.scraping.website}
 #2 
+Durham.LWSP <- read_html('https://www.ncwater.org/WUDC/app/LWSP/report.php?pwsid=03-32-010&year=2022')
+
+Durham.LWSP
 
 ```
 
@@ -57,6 +68,25 @@ In the code chunk below scrape these values, assigning them to four separate var
 
 ```{r scrape.the.data}
 #3 
+Water.system.name <- Durham.LWSP %>%
+  html_nodes("div+ table tr:nth-child(1) td:nth-child(2)") %>%
+  html_text()
+Water.system.name
+
+PWSID <- Durham.LWSP %>%
+  html_nodes("td tr:nth-child(1) td:nth-child(5)") %>%
+  html_text()
+PWSID
+
+Ownership <- Durham.LWSP %>%
+  html_nodes("div+ table tr:nth-child(2) td:nth-child(4)") %>%
+  html_text()
+Ownership
+
+MGD <- Durham.LWSP %>%
+  html_nodes("th~ td+ td") %>%
+  html_text()
+MGD
 
 ```
 
@@ -67,12 +97,42 @@ In the code chunk below scrape these values, assigning them to four separate var
 
 >NOTE: It's likely you won't be able to scrape the monthly widthrawal data in chronological order. You can overcome this by creating a month column manually assigning values in the order the data are scraped: "Jan", "May", "Sept", "Feb", etc... Or, you could scrape month values from the web page...
 
+```{r}
+month.order <- c("Jan", "May", "Sep", "Feb", "Jun", "Oct", "Mar", "Jul", "Nov", "Apr", "Aug", "Dec")
+
+Durham.LWSP.data <- data.frame("Month" = rep(1:12),
+                               "Year" = rep(2022,12),
+                               "Maximum.Day.Use" = as.numeric(MGD)) %>%
+  mutate('Water System' = !!Water.system.name,
+         Ownership = !!Ownership,
+         PWSID = !!PWSID,
+         Month = factor(Month, 
+                        levels = 1:12, 
+                        labels = month.order),
+         Date = my(paste(Month,"-",Year)))
+
+
+month.order.2 <- c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
+
+Durham.LWSP.data <- Durham.LWSP.data %>%
+  mutate(Month = factor(Month, levels = month.order.2)) %>%
+  arrange(Month)
+
+view(Durham.LWSP.data)
+
+```
+
+
 5. Create a line plot of the maximum daily withdrawals across the months for 2022
 
 ```{r create.a.dataframe.from.scraped.data}
-#4 
-
-#5 
+#5
+ggplot(Durham.LWSP.data, aes(x = Month, y = `Maximum.Day.Use`)) +
+  geom_line(aes(group = 1)) + 
+  geom_smooth(method="loess", se=FALSE) +
+  labs(title = "Maximum Daily Withdrawals Across 2022 Months ",
+       x = "Month",
+       y = "Maximum Daily Withdrawals")
 
 ```
 
