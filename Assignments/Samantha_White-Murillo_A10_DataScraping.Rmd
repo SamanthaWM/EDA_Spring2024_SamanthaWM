@@ -1,7 +1,11 @@
 ---
-title: "Assignment 10: Data Scraping"
+title: 'Assignment 10: Data Scraping'
 author: "Samantha White-Murillo"
-output: pdf_document
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+  word_document: default
 ---
 
 ## OVERVIEW
@@ -25,13 +29,14 @@ This exercise accompanies the lessons in Environmental Data Analytics on data sc
 
 ```{r 1. Project Setup, message = FALSE}
 #1 
-library(tidybayes)
+library(tidyverse)
 library(rvest)
 library(lubridate)
 library(viridis)
 library(here)
 library(dataRetrieval)
 library(tidycensus)
+library(dplyr)
 
 here()
 
