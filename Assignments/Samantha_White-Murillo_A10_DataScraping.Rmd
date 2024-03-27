@@ -140,50 +140,38 @@ ggplot(Durham.LWSP.data, aes(x = Month, y = `Maximum.Day.Use`)) +
 
 ```{r construct.a.scraping.function}
 #6. 
-Durham.LWSP.scraped <- function(PWSID, the_year) {
-  Durham.LWSP.webpage <- read_html(paste0('https://www.ncwater.org/WUDC/app/LWSP/report.php?', PWSID, "&year=", the_year))
-
-  S.Water.system.name_tag <- "div+ table tr:nth-child(1) td:nth-child(2)"
-  S.PWSID_tag <- "td tr:nth-child(1) td:nth-child(5)"
-  S.Ownership_tag <- "div+ table tr:nth-child(2) td:nth-child(4)"
-  S.MGD_tag <- "th~ td+ td"
-
-  S.Water.system.name <- Durham.LWSP.webpage %>%
-    html_nodes(S.Water.system.name_tag) %>% 
-    html_text()
-  S.PWSID <- Durham.LWSP.webpage %>%
-    html_nodes(S.PWSID_tag) %>% 
-    html_text()
-  S.Ownership <- Durham.LWSP.webpage %>%
-    html_nodes(S.Ownership_tag) %>% 
-    html_text()
-  S.MGD <- Durham.LWSP.webpage %>%
-    html_nodes(S.MGD_tag) %>% 
-    html_text()
-
-  # Convert MGD to numeric, handling non-numeric values
-  S.MGD_numeric <- as.numeric(S.MGD)
-  S.MGD_numeric[is.na(S.MGD_numeric)] <- 0  # Replace NA values with 0 or handle them as appropriate
-
-  month.order.3 <- c("Jan", "May", "Sep", "Feb", "Jun", "Oct", "Mar", "Jul", "Nov", "Apr", "Aug", "Dec")
+Durham.LWSP.scraped <- function(PWSID, the_year){
+  
+  Durham.LWSP.website <- read_html(paste0('https://www.ncwater.org/WUDC/app/WWATR/report/view/', 
+                                  PWSID, '/', the_year))
+  
+  Water.system.name_tag <- 'div+ table tr:nth-child(1) td:nth-child(2)'
+  PWSID_tag <- 'td tr:nth-child(1) td:nth-child(5)'
+  Ownership_tag <- 'div+ table tr:nth-child(2) td:nth-child(4)'
+  MGD_tag <- 'th~ td+ td'
+  
+  Water.system.name_val <- Durham.LWSP.website %>% html_nodes(Water.system.name_tag) %>% html_text()
+  PWSID_val <- Durham.LWSP.website %>%   html_nodes(PWSID_tag) %>%  html_text()
+  Ownership_val <- Durham.LWSP.website %>% html_nodes(Ownership_tag) %>% html_text()
+  MGD_val <- Durham.LWSP.website %>% html_nodes(MGD_tag) %>% html_text()
+  
+  month.order <- c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
+  
   S.Durham.LWSP.data <- data.frame("Month" = rep(1:12),
-                                   "Year" = rep(the_year, 12),
-                                   "Maximum.Day.Use" = S.MGD_numeric) %>%
-    mutate('Water System' = !!Water.system.name,
-           Ownership = !!Ownership,
-           PWSID = !!PWSID,
-           Month = factor(Month, levels = 1:12, labels = month.order.3),
-           Date = my(paste(Month, "-", the_year)))
-
-  month.order.4 <- c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
-  Durham.LWSP.data <- Durham.LWSP.data %>%
-    mutate(Month = factor(Month, levels = month.order.4)) %>%
-    arrange(Month)
-
+                                   "Year" = rep(the_year,12),
+                                   "Maximum.Day.Use" = as.numeric(MGD_val)) %>% 
+    mutate('Water System' = Water.system.name_val,
+           Ownership = Ownership_val,
+           PWSID = PWSID_val,
+           Month = factor(Month,
+                          levels = 1:12, 
+                          labels = month.order),
+           Date = paste(Month,"-",the_year, sep=""))
+  
   return(S.Durham.LWSP.data)
 }
 
-Durham.LWSP.scraped(PWSID = "01-11-010", the_year = 2023)
+Durham.LWSP.scraped(PWSID = '03-32-010', the_year = 2015)
 
 ```
 
@@ -191,7 +179,14 @@ Durham.LWSP.scraped(PWSID = "01-11-010", the_year = 2023)
 
 ```{r fetch.and.plot.Durham.2015.data}
 #7 
+Durham.LWSP.Data.2015 <- Durham.LWSP.scraped(PWSID = "03-32-010", the_year = 2015)
 
+ggplot(Durham.LWSP.Data.2015, aes(x = Month, y = `Maximum.Day.Use`)) +
+  geom_line(aes(group = 1)) + 
+  geom_smooth(method="loess", se=FALSE) +
+  labs(title = "Maximum Daily Withdrawals Across 2015 Months ",
+       x = "Month",
+       y = "Maximum Daily Withdrawals")
 
 ```
 
@@ -199,7 +194,17 @@ Durham.LWSP.scraped(PWSID = "01-11-010", the_year = 2023)
 
 ```{r fetch.and.plot.Asheville.2015.data}
 #8 
+Ashville.LWSP.Data.2015 <- Durham.LWSP.scraped(PWSID = "01-11-010", the_year = 2015)
+Combined <- bind_rows(Durham.LWSP.Data.2015, Ashville.LWSP.Data.2015)
 
+ggplot(Combined, aes(x = Month, y = Maximum.Day.Use, color = PWSID)) +
+  geom_line() +
+  labs(title = "Comparison of Water Withdrawals: Durham vs Asheville",
+       x = "Month",
+       y = "Maximum Daily Withdrawals",
+       color = "PWSID") +
+  scale_color_manual(values = c("03-32-010" = "lightblue", "Asheville" = "pink")) +
+  theme_minimal()
 
 ```
 
@@ -210,6 +215,7 @@ Durham.LWSP.scraped(PWSID = "01-11-010", the_year = 2023)
 
 ```{r fetch.and.plot.Asheville.multiyear.data }
 #9 
+Ashville.LWSP.Data.2010 <- Durham.LWSP.scraped(PWSID = "01-11-010", the_year = 2015)
 
 
 ```
