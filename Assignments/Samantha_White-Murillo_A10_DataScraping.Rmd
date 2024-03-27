@@ -142,8 +142,8 @@ ggplot(Durham.LWSP.data, aes(x = Month, y = `Maximum.Day.Use`)) +
 #6. 
 Durham.LWSP.scraped <- function(PWSID, the_year){
   
-  Durham.LWSP.website <- read_html(paste0('https://www.ncwater.org/WUDC/app/WWATR/report/view/', 
-                                  PWSID, '/', the_year))
+  Durham.LWSP.website <- read_html(paste0('https://www.ncwater.org/WUDC/app/LWSP/report.php?',
+'pwsid=',PWSID, '&year=',the_year))
   
   Water.system.name_tag <- 'div+ table tr:nth-child(1) td:nth-child(2)'
   PWSID_tag <- 'td tr:nth-child(1) td:nth-child(5)'
@@ -155,7 +155,7 @@ Durham.LWSP.scraped <- function(PWSID, the_year){
   Ownership_val <- Durham.LWSP.website %>% html_nodes(Ownership_tag) %>% html_text()
   MGD_val <- Durham.LWSP.website %>% html_nodes(MGD_tag) %>% html_text()
   
-  month.order <- c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
+  month.order <- c("Jan", "May", "Sep", "Feb", "Jun", "Oct", "Mar", "Jul", "Nov", "Apr", "Aug", "Dec")
   
   S.Durham.LWSP.data <- data.frame("Month" = rep(1:12),
                                    "Year" = rep(the_year,12),
@@ -168,10 +168,14 @@ Durham.LWSP.scraped <- function(PWSID, the_year){
                           labels = month.order),
            Date = paste(Month,"-",the_year, sep=""))
   
+  month.order.2 <- c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
+  
+  S.Durham.LWSP.data <- S.Durham.LWSP.data %>%
+  mutate(Month = factor(Month, levels = month.order.2)) %>%
+  arrange(Month)
+  
   return(S.Durham.LWSP.data)
 }
-
-Durham.LWSP.scraped(PWSID = '03-32-010', the_year = 2015)
 
 ```
 
@@ -184,7 +188,7 @@ Durham.LWSP.Data.2015 <- Durham.LWSP.scraped(PWSID = "03-32-010", the_year = 201
 ggplot(Durham.LWSP.Data.2015, aes(x = Month, y = `Maximum.Day.Use`)) +
   geom_line(aes(group = 1)) + 
   geom_smooth(method="loess", se=FALSE) +
-  labs(title = "Maximum Daily Withdrawals Across 2015 Months ",
+  labs(title = paste("Maximum Daily Withdrawals Across 2015 Months"),
        x = "Month",
        y = "Maximum Daily Withdrawals")
 
@@ -195,16 +199,17 @@ ggplot(Durham.LWSP.Data.2015, aes(x = Month, y = `Maximum.Day.Use`)) +
 ```{r fetch.and.plot.Asheville.2015.data}
 #8 
 Ashville.LWSP.Data.2015 <- Durham.LWSP.scraped(PWSID = "01-11-010", the_year = 2015)
-Combined <- bind_rows(Durham.LWSP.Data.2015, Ashville.LWSP.Data.2015)
 
-ggplot(Combined, aes(x = Month, y = Maximum.Day.Use, color = PWSID)) +
-  geom_line() +
+Combined <- rbind(Durham.LWSP.Data.2015, Ashville.LWSP.Data.2015)
+
+ggplot(Combined, aes(x = Month, y = Maximum.Day.Use, color = `Water System`)) +
+  geom_line(aes(group = 1)) +
   labs(title = "Comparison of Water Withdrawals: Durham vs Asheville",
        x = "Month",
        y = "Maximum Daily Withdrawals",
-       color = "PWSID") +
-  scale_color_manual(values = c("03-32-010" = "lightblue", "Asheville" = "pink")) +
-  theme_minimal()
+       color = "Location") +
+  theme(legend.position = "right",
+        legend.background = element_rect(fill = "white", colour = 1))
 
 ```
 
@@ -213,13 +218,28 @@ ggplot(Combined, aes(x = Month, y = Maximum.Day.Use, color = PWSID)) +
 
 > TIP: See Section 3.2 in the "10_Data_Scraping.Rmd" where we apply "map2()" to iteratively run a function over two inputs. Pipe the output of the map2() function to `bindrows()` to combine the dataframes into a single one. 
 
-```{r fetch.and.plot.Asheville.multiyear.data }
+```{r fetch.and.plot.Asheville.multiyear.data, warning=FALSE}
 #9 
-Ashville.LWSP.Data.2010 <- Durham.LWSP.scraped(PWSID = "01-11-010", the_year = 2015)
+PWSID <- '01-11-010'
+the_year <- rep(2010:2021)
+the_months = rep(1:12)
 
+the_dfs <- lapply(X = the_year, FUN = Durham.LWSP.scraped, PWSID = PWSID) %>%
+  bind_rows()
+
+MDW <-  map2(the_year, PWSID, Durham.LWSP.scraped) %>% 
+  bind_rows()
+
+ ggplot(MDW, aes(x = Year, y = Maximum.Day.Use)) +
+   geom_line() +
+   geom_smooth(method = "loess", se = FALSE) +
+   labs(title = paste("Asheville's Maximum Water Withdrawals"),
+        subtitle = "2010-2021",
+        y = "Withdrawal (mgd)",
+        x = "Date")
 
 ```
 
 Question: Just by looking at the plot (i.e. not running statistics), does Asheville have a trend in water usage over time?
 > Answer:
->
+> Yes, it there is a growth of water use since 2014-2015.
